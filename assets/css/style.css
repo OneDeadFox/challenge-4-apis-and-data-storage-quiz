@@ -1,9 +1,11 @@
 :root {
     --box-accent: whitesmoke;
     --box-color: aliceblue;
-    --header-color: rgb(208, 225, 240);
+    --bg-color: rgb(208, 225, 240);
+    --header-color: rgb(174, 198, 219);
     --box-width: 50%;
     --main-height: 50vh;
+    --shadow-color: rgba(1, 25, 46, 0.651);
 }
 
 * {
@@ -14,11 +16,72 @@
 }
 
 body {
-    background-color: white;
+    background-color: var(--bg-color);
     display:flex;
     flex-direction: column;
     align-items: center;
 }
+
+/*#region Onload Screen*/
+#veil {
+    background-color: var(--bg-color);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    display: none;
+}
+
+#greeting {
+    background-color: var(--box-color);
+    font-size: 5.5vh;
+    text-align: center;
+    padding: 2%;
+    border-radius: 1em;
+    box-shadow: 2px 2px 4px var(--shadow-color);
+}
+
+#start {
+    background-color: var(--box-color);
+    font-size: 4.5vh;
+    text-align: center;
+    padding: 1%;
+    margin-top: .5%;
+    border-radius: .5em;
+    box-shadow: 2px 2px 4px var(--shadow-color);
+}
+
+#orb1 {
+    background-color: var(--box-color);
+    padding: 2%;
+    margin-top: .3%;
+    margin-left: 22%;
+    border-radius: 100%;
+    box-shadow: 2px 2px 4px var(--shadow-color);
+}
+
+#orb2 {
+    background-color: var(--box-color);
+    padding: 1.5%;
+    margin-top: -.5%;
+    margin-left: 15.5%;
+    border-radius: 100%;
+    box-shadow: 2px 2px 4px var(--shadow-color);
+}
+
+#orb3 {
+    background-color: var(--box-color);
+    padding: 1%;
+    margin-top: -.5%;
+    margin-left: 10%;
+    border-radius: 100%;
+    box-shadow: 2px 2px 4px var(--shadow-color);
+}
+/*#endregion Onload Screen*/
+
 
 /*#region Header*/
 header {
@@ -28,10 +91,27 @@ header {
     margin-top: 5vh;
     border-top-left-radius: 4em;
     border-top-right-radius: 4em;
-    border-right: 3px solid var(--box-accent);
+    box-shadow: 2px 0px 4px var(--shadow-color);
     display:flex;
     flex-direction: column;
     align-items: center;
+}
+
+.question-select {
+    background-color: var(--box-color);
+    width: 75%;
+    height: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.q-nav {
+    background-color: var(--header-color);
+    width: 11px;
+    height: 11px;
+    border: 2px solid var(--box-accent);
+    border-radius: 100%;
 }
 
 #title {
@@ -43,9 +123,15 @@ header {
     font-size: 3.25vh;
     padding-top: 1%;
 }
+
+#timer {
+    font-weight: 800;
+    margin-top: 1%;
+    position: relative;
+    left: 36%;
+    bottom: 55%;
+}
 /*#endregion Header*/
-
-
 
 
 /*#region Main*/
@@ -53,11 +139,13 @@ main {
     background-color: var(--box-color);
     width: var(--box-width);
     height: var(--main-height);
+    margin-top: -2px;
     margin-bottom: 5vh;
     border-bottom-left-radius: 4em;
     border-bottom-right-radius: 4em;
-    border-bottom: 4px solid var(--box-accent);
-    border-right: 3px solid var(--box-accent);
+    box-shadow: 2px 2px 4px var(--shadow-color);
+    /* border-bottom: 4px solid var(--box-accent);
+    border-right: 3px solid var(--box-accent); */
     display:flex;
     position: absolute;
     top: 25vh;
@@ -84,8 +172,6 @@ main form {
 /*#endregion Maib*/
 
 
-
-
 /*#region Footer*/
 footer {
     background-color: var(--box-color);
@@ -107,7 +193,8 @@ h3{
 }
 /*#endregion Footer*/
 
-/*region Breakpoints*/
+
+/*#region Breakpoints*/
 @media screen and (max-width: 768px) {  
     header {
         width: 90%;
@@ -116,10 +203,24 @@ h3{
 
     #title {
         font-size: 4.5vh;
+        padding-top: 2%
     }
 
     #subtitle {
         font-size: 2.75vh;
+        padding-top: 2%
+    }
+
+    #timer {
+        font-weight: 800;
+        margin-top: 1%;
+        position: relative;
+        left: 0;
+        bottom: 0;
+    }
+
+    .question-select {
+        margin-top: 1%;
     }
 
     main {
@@ -141,5 +242,5 @@ h3{
         display: none;
     }
 }
-/*endregion Breakpoints*/
+/*#endregion Breakpoints*/
 
