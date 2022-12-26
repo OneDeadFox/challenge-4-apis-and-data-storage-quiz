@@ -95,6 +95,8 @@ header {
     display:flex;
     flex-direction: column;
     align-items: center;
+    position: absolute;
+
 }
 
 .question-select {
@@ -169,6 +171,7 @@ main form {
     justify-content: space-between;
     
 }
+
 /*#endregion Maib*/
 
 
