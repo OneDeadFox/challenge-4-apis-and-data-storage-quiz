@@ -40,10 +40,15 @@ let pageEl = document.body;
 let timerEl = document.querySelector("#timer");
 let startScreenEl = document.getElementById("veil");
 let formEl = document.getElementById("question-block");
+let questionFill = document.querySelector("#question");
+let navNode = document.querySelectorAll(".q-nav");
 let opacity = 100;
 let gameTime = 300;
+let score = 0;
 let questionSet = [];
 let answerSet = [];
+let questionQueue = 0;
+
 
 //#region Event Delegator
 //Delegator
@@ -88,6 +93,38 @@ pageEl.addEventListener("click", function(event){
 //#endregion Event Delegator
 
 
+
+//Form Submition
+formEl.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    var formData = new FormData(formEl);
+    var rspValidity = formData.get("answer");
+    
+    if(rspValidity === null) {
+        alert('Please select an answer before pressing submit');
+    } else if(rspValidity === "true") {
+        //increase score
+        score++;
+        //TODO: light up nav bar
+        navNode[questionQueue].setAttribute("style", "background-color: white");
+        console.log(navNode[questionQueue]);
+        //change question and answers
+        questionQueue++;
+        questionFill.textContent = questionSet[questionQueue].question;
+        questionPop(...questionSet[questionQueue].answers);
+    } else {
+        //decrease time remove upon completion of navigation
+        gameTime - 30;
+
+        //change question and answers
+        questionQueue++;
+        questionFill.textContent = questionSet[questionQueue].question;
+        questionPop(...questionSet[questionQueue].answers);
+
+    }
+});
+
 //#region Objects
 
 //change answers to objects with id, answer string, and validity properties.
@@ -95,26 +132,25 @@ let question1 = {
     id: "question",
     question: "This is a test question",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "a", validity: false}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
 };
 
 let question2 = {
     id: "question",
     question: "This is a another test",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "1", validity: false}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]};
+    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]};
 
 let question3 = {
     id: "question",
     question: "This is the last test question",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: false}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]};
+    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]};
 //#endregion Objects
 
 
 //#region Functions
 function questionPop() {
-    var questionFill = document.querySelector("#question");
     var answerOptions = document.querySelectorAll('[name="answer"]');
     var questionList = [question1, question2, question3];
     var lineup = [];
@@ -167,8 +203,6 @@ function questionPop() {
                 for(i = 0; i < arr.length; i ++) {
                     if(arr[ii].number === i) {
                         answerSet[i] = arr[ii];
-                        console.log([arr[ii].number]);
-                        console.log(arr[ii].id)
                     ii = 0;
                     } else {
                         i--;
@@ -177,19 +211,17 @@ function questionPop() {
                 }
 
                 for(var i = 0; i < answerOptions.length; i++){
-                    var label = document.createElement("label");
-                    var linebreak = document.createElement("br");
-                    label.setAttribute("for", `answer-${answerSet[i].number}`);
-                    label.setAttribute("class", "label");
-                    label.setAttribute("id", `label-${answerSet[i].number}`);
-                    label.textContent = answerSet[i].answer;
-                    answerOptions[i].after(label);
                     var labels = document.querySelectorAll(".label");
-                    console.log(labels[i]);
-                    labels[i].after(linebreak);
-                    console.log(label);
+                    var radios = document.querySelectorAll("input[type=radio]");
+
+                    //console.log(radios[i])
+                    //console.log(labels[i])
+                    
+                    radios[i].setAttribute("value", `${answerSet[i].validity}`)
+                    labels[answerSet[i].number].textContent = answerSet[i].answer;
                     }
 
+                    
                 return;
 
             }
@@ -197,10 +229,8 @@ function questionPop() {
     }
 
     lineupRandomizer(...questionList);
-    
     lineupRandomizer(...questionSet[0].answers);
 }
-
 
 //#endregion Functions
 
