@@ -35,35 +35,48 @@
 //TODO: allow player to save initials and score to leader board
     //1. have a submit button that addes users initials and score to a database that wont be erased on refresh or esc
 
+//Additional TODO:'s, no particular order
+//set nav button bg-color to change upon direct nav, active question, and skipped
+
+
 //Global Variables
 let pageEl = document.body;
 let timerEl = document.querySelector("#timer");
 let startScreenEl = document.getElementById("veil");
 let formEl = document.getElementById("question-block");
 let questionFill = document.querySelector("#question");
-let navNode = document.querySelectorAll(".q-nav");
+let answerOptions = document.querySelectorAll('[name="answer"]');
+let qNavBar = document.getElementsByClassName("question-select");
 let opacity = 100;
 let gameTime = 300;
 let score = 0;
+let questionQueue = 0;
+let tempLoc = 0;
 let questionSet = [];
 let answerSet = [];
-let questionQueue = 0;
+
 
 
 //#region Event Delegator
 //Delegator
 
-pageEl.addEventListener("click", function(event){
+pageEl.addEventListener("click", function(event) {
     var element = event.target;
 
-    if(element.matches("#start")){
+    if(element.matches("#start")) {
         //function that will reduce id-veil opacity in 1% increments over a period of time until it reaches 100%
         screenTimer();
+    } else if(element.matches("#skip")) {
+        skipQuestion();
+    } else if(element.matches(".q-nav")) {
+        console.log(navNodes);
+        navToQuestion(element);
     }
 
 });
 
     //Delegator Functions
+    //animation for start screen disappearing
     function screenTimer(){
         var screenTimeLeft = setInterval(function() {
             opacity--;
@@ -77,6 +90,7 @@ pageEl.addEventListener("click", function(event){
             }
         },2);
     }
+    //in game timer
     function gameTimer(){
         var gameTimeLeft = setInterval(function() {
             gameTime--
@@ -88,6 +102,22 @@ pageEl.addEventListener("click", function(event){
                 clearInterval(gameTimeLeft);
             }
         }, 1000);
+    }
+    //skip current questtion with time penalty
+    function skipQuestion() {
+        questionQueue++;
+        console.log("qQ value " + questionQueue);
+        questionFill.textContent = questionSet[questionQueue].question;
+        lineupRandomizer(...questionSet[questionQueue].answers);
+        console.log("qQ value " + questionQueue);
+    }
+    //navigate to clicked question
+    function navToQuestion(el) {
+        //wont work with el.number
+        console.log()
+        questionFill.textContent = questionSet[el.dataset.number].question;
+        lineupRandomizer(...questionSet[el.dataset.number].answers);
+
     }
 
 //#endregion Event Delegator
@@ -106,21 +136,23 @@ formEl.addEventListener("submit", function(event) {
     } else if(rspValidity === "true") {
         //increase score
         score++;
-        //TODO: light up nav bar
-        navNode[questionQueue].setAttribute("style", "background-color: white");
-        console.log(navNode[questionQueue]);
+        //light up nav bar
+        navNodes[questionQueue].setAttribute("style", "background-color: white");
         //change question and answers
-        questionQueue++;
+        //questionQueue++;
         questionFill.textContent = questionSet[questionQueue].question;
-        questionPop(...questionSet[questionQueue].answers);
+        lineupRandomizer(...questionSet[questionQueue].answers);
     } else {
         //decrease time remove upon completion of navigation
         gameTime - 30;
 
+        //light up nav bar
+        navNodes[questionQueue].setAttribute("style", "background-color: white");
+        
         //change question and answers
-        questionQueue++;
+        //questionQueue++;
         questionFill.textContent = questionSet[questionQueue].question;
-        questionPop(...questionSet[questionQueue].answers);
+        lineupRandomizer(...questionSet[questionQueue].answers);
 
     }
 });
@@ -130,108 +162,148 @@ formEl.addEventListener("submit", function(event) {
 //change answers to objects with id, answer string, and validity properties.
 let question1 = {
     id: "question",
-    question: "This is a test question",
+    question: "question-a",
     number: 0,
+    //is my ture/false value a boolean when declared here because it is not upon being recieved in above function.
     answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
 };
 
 let question2 = {
     id: "question",
-    question: "This is a another test",
+    question: "question-1",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]};
+    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+};
 
 let question3 = {
     id: "question",
-    question: "This is the last test question",
+    question: "question-i",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]};
+    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+};
+
+let question4 = {
+    id: "question",
+    question: "question-d",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
+};
+
+let question5 = {
+    id: "question",
+    question: "question-5",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+};
+
+let question6 = {
+    id: "question",
+    question: "question-vi",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+};
+
+let questionList = [question1, question2, question3, question4, question5, question6];
 //#endregion Objects
 
 
 //#region Functions
-function questionPop() {
-    var answerOptions = document.querySelectorAll('[name="answer"]');
-    var questionList = [question1, question2, question3];
-    var lineup = [];
-
-    //create array of random number order
-    function lineupRandomizer(...arr) {
-        for(var i = 0; i <= arr.length; i++){
-            var tempNum = Math.floor(Math.random()*arr.length);
-            //see if array have generated value
-            if(lineup.includes(tempNum)){
-                i--;
-            }else{
-            lineup.push(tempNum);
-            }
-
-            //set numbers in questionLineup array and exit loop
-            //questionList only
-            if(lineup.length === arr.length && arr[0].question != undefined) {
-                //fill arr object numbers with newly assigned values
-                for(i = 0; i < lineup.length; i ++) {
-                    arr[i].number = lineup[i];
-                }
-                //var ii set for following for loop
-                var ii = 0;
-                //set questions in new array in new order
-                for(i = 0; i < arr.length; i ++) {
-                    if(arr[ii].number === i) {
-                        questionSet[i] = arr[ii];
-                    ii = 0;
-                    } else {
-                        i--;
-                        ii++;
-                    }
-                }
-                //Populate question based on lineup arr.
-                questionFill.textContent = questionSet[0].question;
-                return;
-            //set up answers in a random ordered array
-            //answers only
-            } else if(lineup.length === arr.length && arr[0].question === undefined) {
-                //set answers in an array in a new order
-                //fill arr object numbers with newly assigned values
-                for(i = 0; i < lineup.length; i ++) {
-                    arr[i].number = lineup[i];
-        
-                }
-                //var ii set for following for loop
-                var ii = 0;
-                //set questions in new array in new order
-                for(i = 0; i < arr.length; i ++) {
-                    if(arr[ii].number === i) {
-                        answerSet[i] = arr[ii];
-                    ii = 0;
-                    } else {
-                        i--;
-                        ii++;
-                    }
-                }
-
-                for(var i = 0; i < answerOptions.length; i++){
-                    var labels = document.querySelectorAll(".label");
-                    var radios = document.querySelectorAll("input[type=radio]");
-
-                    //console.log(radios[i])
-                    //console.log(labels[i])
-                    
-                    radios[i].setAttribute("value", `${answerSet[i].validity}`)
-                    labels[answerSet[i].number].textContent = answerSet[i].answer;
-                    }
-
-                    
-                return;
-
-            }
-        }
-    }
-
+function questionPop() {   
     lineupRandomizer(...questionList);
     lineupRandomizer(...questionSet[0].answers);
+    for(var i = 0; i < questionSet.length; i++) {
+        //might need to move outside the loop
+        var navNode = document.createElement("button");
+        navNode.setAttribute("id", `q${i}`);
+        navNode.setAttribute("class", `q-nav`);
+        navNode.setAttribute("data-number", `${i}`);
+        qNavBar[0].appendChild(navNode);
+        
+    }
 }
 
+//create array of random number order
+function lineupRandomizer(...arr) {
+    var lineup = [];
+    for(var i = 0; i <= arr.length; i++){
+        var tempNum = Math.floor(Math.random()*arr.length);
+
+        //see if array have generated value
+        if(lineup.includes(tempNum)){
+            i--;
+        }else{
+        lineup.push(tempNum);
+        }
+
+        //set numbers in questionLineup array and exit loop
+        //questionList only
+        if(lineup.length === arr.length && arr[0].question != undefined) {
+            //fill arr object numbers with newly assigned values
+            for(i = 0; i < lineup.length; i ++) {
+                arr[i].number = lineup[i];
+            }
+            //var ii set for following for loop
+            var ii = 0;
+            //set questions in new array in new order
+            for(i = 0; i < arr.length; i ++) {
+                if(arr[ii].number === i) {
+                    questionSet[i] = arr[ii];
+                ii = 0;
+                } else {
+                    i--;
+                    ii++;
+                }
+            }
+            //Populate question based on lineup arr.
+            questionFill.textContent = questionSet[0].question;
+            return;
+        //set up answers in a random ordered array
+        //answers only
+        } else if(lineup.length === arr.length && arr[0].question === undefined) {
+            //set answers in an array in a new order
+            //fill arr object numbers with newly assigned values
+            for(i = 0; i < lineup.length; i ++) {
+                arr[i].number = lineup[i];
+    
+            }
+            //var ii set for following for loop
+            var ii = 0;
+            //set questions in new array in new order
+            for(i = 0; i < arr.length; i ++) {
+                if(arr[ii].number === i) {
+                    answerSet[i] = arr[ii];
+                ii = 0;
+                } else {
+                    i--;
+                    ii++;
+                }
+            }
+
+            for(var i = 0; i < answerOptions.length; i++){
+                var labels = document.querySelectorAll(".label");
+                var radios = document.querySelectorAll("input[type=radio]");
+
+                //console.log(radios[i])
+                //console.log(labels[i])
+                
+                radios[i].setAttribute("value", `${answerSet[i].validity}`)
+                labels[answerSet[i].number].textContent = answerSet[i].answer;
+                }
+
+                
+            return;
+
+        }
+    }
+}
 //#endregion Functions
 
 questionPop();
+let navNodes = document.querySelectorAll(".q-nav");
+console.log(questionSet[0].question);
+console.log(questionSet[1].question);
+console.log(questionSet[2].question);
+console.log(questionSet[3].question);
+console.log(questionSet[4].question);
+console.log(questionSet[5].question);
+console.log("length " + questionSet.length);

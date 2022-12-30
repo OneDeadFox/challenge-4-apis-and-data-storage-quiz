@@ -225,8 +225,28 @@ main form {
 #q-submit {
     position: absolute;
     top: 100%;
-    left: 41%;
+    left: 31%;
 }
+
+#skip {
+    position: absolute;
+    top: 100%;
+    left: 51%;
+}
+
+.button {
+    background-color: var(--header-color);
+    width: 4.5em;
+    border: 2px solid var(--bg-color);
+    border-radius: 6px;
+    transition: all .05s linear;
+}
+
+.button:active {
+    background-color: var(--bg-color);
+    border-color: white; 
+}
+
 /*#endregion Main*/
 
 
