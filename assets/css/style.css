@@ -32,7 +32,7 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 2;
-    /*display: none;*/
+    display: none;
 }
 
 #greeting {
@@ -177,6 +177,7 @@ header {
     height: 11px;
     border: 2px solid var(--box-accent);
     border-radius: 100%;
+    transition: all .1s ease-in;
 }
 
 #title {

@@ -39,7 +39,7 @@
 //set nav button bg-color to change upon direct nav, active question, and skipped
 
 
-//Global Variables
+//Global Variables----------------------------------------------------
 let pageEl = document.body;
 let timerEl = document.querySelector("#timer");
 let startScreenEl = document.getElementById("veil");
@@ -59,11 +59,12 @@ let gameTime = 1;
 let score = 0;
 let questionQueue = 0;
 let tempLoc = 0;
+let initQs = [];
 let questionSet = [];
 let answerSet = [];
 
 
-
+//--------------------------------------------------------------------
 //#region Event Delegator
 //Delegator
 
@@ -86,7 +87,7 @@ pageEl.addEventListener("click", function(event) {
 
 });
 
-    //Delegator Functions
+    //Delegator Functions---------------------------------------------
     //animation for start screen disappearing
     function screenTimer(screen){
         var screenTimeLeft = setInterval(function() {
@@ -138,8 +139,13 @@ pageEl.addEventListener("click", function(event) {
     
     //navigate to clicked question
     function navToQuestion(el) {
-        //wont work with el.number
-        console.log()
+        for(var i = 0; i < navNodes.length; i++) {
+            if(navNodes[i] === el) {
+                paintNode(el, "var(--bg-color);", "13px;");
+            } else {
+                navNodes[i].setAttribute("style", "");
+            }
+        }
         questionFill.textContent = questionSet[el.dataset.number].question;
         lineupRandomizer(...questionSet[el.dataset.number].answers);
 
@@ -182,6 +188,8 @@ pageEl.addEventListener("click", function(event) {
 
     //restart the game
     function restart() {
+        var lis = document.querySelectorAll(".int-entry");
+
         screenTimer(goScreenEl);
         gameTime = 1;
         score = 0;
@@ -189,53 +197,80 @@ pageEl.addEventListener("click", function(event) {
         tempLoc = 0;
         questionSet = [];
         answerSet = [];
-        console.log(navNodes.length);
+        initials.setAttribute("style", "display: flex");
+        intSubButton.setAttribute("style", "display: flex");
         for(var i = 0; i < navNodes.length; i++){
             navNodes[i].remove();
         }
+        for(var i = 0; i < lis.length; i++){
+            lis[i].remove();
+        }
         questionPop();
+        
     }
 
 //#endregion Event Delegator
 
 
 
-//Form Submition
+//Form Submition------------------------------------------------------
 formEl.addEventListener("submit", function(event) {
     event.preventDefault();
 
     var formData = new FormData(formEl);
     var rspValidity = formData.get("answer");
     
+    //paint previous node
+    paintNode(navNodes[questionQueue], "white;", "11px;");
+
     if(rspValidity === null) {
         alert('Please select an answer before pressing submit');
     } else if(rspValidity === "true") {
         //increase score
         score++;
-        //light up nav bar
-        navNodes[questionQueue].setAttribute("style", "background-color: white");
-        //change question and answers
-        //questionQueue++;
+
+        //change question and answers var
+        questionQueue++;
+
+        //end game if out of questions
+        if(questionQueue >= questionSet.length) {
+            gameOver();
+            return;
+        }
+
+         //change question and answers content
         questionFill.textContent = questionSet[questionQueue].question;
         lineupRandomizer(...questionSet[questionQueue].answers);
     } else {
         //decrease time remove upon completion of navigation
         gameTime - 30;
 
-        //light up nav bar
-        navNodes[questionQueue].setAttribute("style", "background-color: white");
-        
         //change question and answers
-        //questionQueue++;
+        questionQueue++;
+
+        //end game if out of questions
+        if(questionQueue >= questionSet.length) {
+            gameOver();
+            return;
+        }
+
+         //change question and answers content
         questionFill.textContent = questionSet[questionQueue].question;
         lineupRandomizer(...questionSet[questionQueue].answers);
 
     }
+    //light up current node
+    paintNode(navNodes[questionQueue], "var(--bg-color);", "13px;");
+
+    for(var i = 0; i < answerOptions.length; i++) {
+        answerOptions[i].checked = false;
+    }
+
 });
 
+//--------------------------------------------------------------------
 //#region Objects
 
-//change answers to objects with id, answer string, and validity properties.
 let question1 = {
     id: "question",
     question: "question-a",
@@ -279,16 +314,115 @@ let question6 = {
     answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
 };
 
-let questionList = [question1, question2, question3, question4, question5, question6];
+let question7 = {
+    id: "question",
+    question: "question-7",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+};
+
+let question8 = {
+    id: "question",
+    question: "question-8",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
+};
+
+let question9 = {
+    id: "question",
+    question: "question-9",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+};
+
+let question10 = {
+    id: "question",
+    question: "question-10",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+};
+
+let question11 = {
+    id: "question",
+    question: "question-11",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+};
+
+let question12 = {
+    id: "question",
+    question: "question-12",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+};
+
+let question13 = {
+    id: "question",
+    question: "question-13",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+};
+
+let question14 = {
+    id: "question",
+    question: "question-14",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
+};
+
+let question15 = {
+    id: "question",
+    question: "question-15",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+};
+
+let question16 = {
+    id: "question",
+    question: "question-16",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+};
+
+let question17 = {
+    id: "question",
+    question: "question-17",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+};
+
+let question18 = {
+    id: "question",
+    question: "question-18",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
+};
+
+let question19 = {
+    id: "question",
+    question: "question-19",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+};
+
+let question20 = {
+    id: "question",
+    question: "question-20",
+    number: 0,
+    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+};
+
+
+let questionList = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11, question12, question13, question14, question15, question16, question17, question18, question19, question20];
 //#endregion Objects
 
 
+//--------------------------------------------------------------------
 //#region Functions
 
 //populated quiz with questions and answers and sets nav buttons
 function questionPop() {   
     lineupRandomizer(...questionList);
-    lineupRandomizer(...questionSet[0].answers);
     //generate navNodes
     for(var i = 0; i < questionSet.length; i++) {
         //might need to move outside the loop
@@ -300,8 +434,7 @@ function questionPop() {
         
     }
     navNodes = document.querySelectorAll(".q-nav");
-
-}
+    paintNode(navNodes[0], "var(--bg-color);", "13px;");}
 
 //create array of random number order
 function lineupRandomizer(...arr) {
@@ -319,6 +452,8 @@ function lineupRandomizer(...arr) {
         //set numbers in questionLineup array and exit loop
         //questionList only
         if(lineup.length === arr.length && arr[0].question != undefined) {
+            var cutLength = Math.round(lineup.length/2);
+            
             //fill arr object numbers with newly assigned values
             for(i = 0; i < lineup.length; i ++) {
                 arr[i].number = lineup[i];
@@ -326,15 +461,29 @@ function lineupRandomizer(...arr) {
             //var ii set for following for loop
             var ii = 0;
             //set questions in new array in new order
+            
+            for(i = 0; i < arr.length; i ++) {
+                console.log(arr[i].number)
+            }
+
+
             for(i = 0; i < arr.length; i ++) {
                 if(arr[ii].number === i) {
-                    questionSet[i] = arr[ii];
+                    initQs[i] = arr[ii];
                 ii = 0;
                 } else {
                     i--;
                     ii++;
                 }
             }
+
+            //divide aquestions into two arrays: intial quiz and extra 
+            questionSet = initQs.splice(0, cutLength);
+            for(var i = 0; i < questionSet.length; i++){    
+            console.log(questionSet[i].question);
+            }
+            var additionalQs = initQs.splice(-cutLength);
+            lineupRandomizer(...questionSet[0].answers);
             //Populate question based on lineup arr.
             questionFill.textContent = questionSet[0].question;
             return;
@@ -363,9 +512,6 @@ function lineupRandomizer(...arr) {
             for(var i = 0; i < answerOptions.length; i++){
                 var labels = document.querySelectorAll(".label");
                 var radios = document.querySelectorAll("input[type=radio]");
-
-                //console.log(radios[i])
-                //console.log(labels[i])
                 
                 radios[i].setAttribute("value", `${answerSet[i].validity}`)
                 labels[answerSet[i].number].textContent = answerSet[i].answer;
@@ -378,7 +524,14 @@ function lineupRandomizer(...arr) {
     }
 }
 
+function paintNode(node, col, s) {
+    node.setAttribute("style", `background-color: ${col}` + `width: ${s}` + `height: ${s}`);
+}
+
 function gameOver() {
+    //set scoring
+    score = (score * 20 + gameTime);
+    //bring up end screen
     endScreenTimer();
     if (leaderboardHistory === null) {
         leaderboardHistory = [];
@@ -392,5 +545,11 @@ function gameOver() {
     }
 }
 //#endregion Functions
+
+
+questionPop();
+console.log(questionSet[0]);
+console.log(questionSet[1]);
+console.log(questionSet[2]);
 
 //localStorage.clear("lbEntries");
