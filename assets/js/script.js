@@ -55,7 +55,7 @@ let leaderboard = document.getElementById("lbList");
 let entry = document.createElement("li");
 let leaderboardHistory = JSON.parse(localStorage.getItem("lbEntries"));
 let opacity = 100;
-let gameTime = 1;
+let gameTime = 200;
 let score = 0;
 let questionQueue = 0;
 let tempLoc = 0;
@@ -191,7 +191,7 @@ pageEl.addEventListener("click", function(event) {
         var lis = document.querySelectorAll(".int-entry");
 
         screenTimer(goScreenEl);
-        gameTime = 1;
+        gameTime = 200;
         score = 0;
         questionQueue = 0;
         tempLoc = 0;
@@ -483,6 +483,9 @@ function lineupRandomizer(...arr) {
             console.log(questionSet[i].question);
             }
             var additionalQs = initQs.splice(-cutLength);
+            for(var i = 0; i < questionSet.length; i++){    
+                console.log(additionalQs[i].question);
+            }
             lineupRandomizer(...questionSet[0].answers);
             //Populate question based on lineup arr.
             questionFill.textContent = questionSet[0].question;
