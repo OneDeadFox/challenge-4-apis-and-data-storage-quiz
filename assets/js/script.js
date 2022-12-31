@@ -43,12 +43,19 @@
 let pageEl = document.body;
 let timerEl = document.querySelector("#timer");
 let startScreenEl = document.getElementById("veil");
+let goScreenEl = document.getElementById("go-screen")
 let formEl = document.getElementById("question-block");
 let questionFill = document.querySelector("#question");
 let answerOptions = document.querySelectorAll('[name="answer"]');
 let qNavBar = document.getElementsByClassName("question-select");
+let navNodes;
+let initials = document.getElementById("initials");
+let intSubButton = document.getElementById("int-submit")
+let leaderboard = document.getElementById("lbList");
+let entry = document.createElement("li");
+let leaderboardHistory = JSON.parse(localStorage.getItem("lbEntries"));
 let opacity = 100;
-let gameTime = 300;
+let gameTime = 1;
 let score = 0;
 let questionQueue = 0;
 let tempLoc = 0;
@@ -65,44 +72,61 @@ pageEl.addEventListener("click", function(event) {
 
     if(element.matches("#start")) {
         //function that will reduce id-veil opacity in 1% increments over a period of time until it reaches 100%
-        screenTimer();
+        screenTimer(startScreenEl);
+        questionPop();
     } else if(element.matches("#skip")) {
         skipQuestion();
     } else if(element.matches(".q-nav")) {
-        console.log(navNodes);
         navToQuestion(element);
+    } else if(element.matches("#int-submit")) {
+        leaderboardAdd();
+    } else if (element. matches("#play-again")){
+        restart();
     }
 
 });
 
     //Delegator Functions
     //animation for start screen disappearing
-    function screenTimer(){
+    function screenTimer(screen){
         var screenTimeLeft = setInterval(function() {
             opacity--;
             //make startScreen disappear
-            startScreenEl.setAttribute("style", `opacity: ${opacity}%`);
+            screen.setAttribute("style", `opacity: ${opacity}%`);
             //clear timer and display upon endtime
             if(opacity <= 0) {
                 clearInterval(screenTimeLeft);
-                startScreenEl.setAttribute("style", "display: none");
+                screen.setAttribute("style", "display: none");
                 gameTimer();
             }
         },2);
     }
-    //in game timer
+
+    function endScreenTimer(){
+        opacity = 0;
+        var screenTimeLeft = setInterval(function() {
+            opacity++;
+            goScreenEl.setAttribute("style", "display: flex;" + `opacity: ${opacity}%;`);
+            //clear timer and display upon endtime
+            if(opacity >= 100) {
+                clearInterval(screenTimeLeft);
+            }
+        }, 5);
+    }
+    
+    //in-game timer
     function gameTimer(){
         var gameTimeLeft = setInterval(function() {
             gameTime--
             //Count down time on screen
             timerEl.textContent = gameTime + " sec";
             if(gameTime <= 0) {
-                //TODO: make this function
-                //endGame();
+                gameOver();
                 clearInterval(gameTimeLeft);
             }
         }, 1000);
     }
+    
     //skip current questtion with time penalty
     function skipQuestion() {
         questionQueue++;
@@ -111,6 +135,7 @@ pageEl.addEventListener("click", function(event) {
         lineupRandomizer(...questionSet[questionQueue].answers);
         console.log("qQ value " + questionQueue);
     }
+    
     //navigate to clicked question
     function navToQuestion(el) {
         //wont work with el.number
@@ -118,6 +143,57 @@ pageEl.addEventListener("click", function(event) {
         questionFill.textContent = questionSet[el.dataset.number].question;
         lineupRandomizer(...questionSet[el.dataset.number].answers);
 
+    }
+
+    //submit initials and score to leaderboard
+    function leaderboardAdd() {
+        //how do I use /^[0-9a-zA-Z]+$/
+        var letterNumber = /^[0-9a-zA-Z]+$/;
+
+        if(initials.value.length > 3) {
+            alert("Your string cannot exceed 3 alphanumeric characters");
+        } else if(initials.value === "") {
+            alert("Please submit upto 3 alphanumeric characters")
+        } else if (!initials.value.match(letterNumber)){
+            alert("Your initials cannot contain special characters");
+        } else {
+            var newEntry = {
+                newInitials: initials.value,
+                newScore: score
+            };
+
+            initials.setAttribute("style", "display: none");
+            intSubButton.setAttribute("style", "display: none");
+
+            entry.setAttribute("class", "int-entry");
+            entry.textContent = initials.value + "  " + score;
+            leaderboard.appendChild(entry);
+            addEntry();
+
+
+            function addEntry(){
+                leaderboardHistory.push(newEntry);
+                localStorage.setItem("lbEntries", JSON.stringify(leaderboardHistory));
+                console.log(leaderboardHistory);
+                
+            }
+        }
+    }
+
+    //restart the game
+    function restart() {
+        screenTimer(goScreenEl);
+        gameTime = 1;
+        score = 0;
+        questionQueue = 0;
+        tempLoc = 0;
+        questionSet = [];
+        answerSet = [];
+        console.log(navNodes.length);
+        for(var i = 0; i < navNodes.length; i++){
+            navNodes[i].remove();
+        }
+        questionPop();
     }
 
 //#endregion Event Delegator
@@ -208,9 +284,12 @@ let questionList = [question1, question2, question3, question4, question5, quest
 
 
 //#region Functions
+
+//populated quiz with questions and answers and sets nav buttons
 function questionPop() {   
     lineupRandomizer(...questionList);
     lineupRandomizer(...questionSet[0].answers);
+    //generate navNodes
     for(var i = 0; i < questionSet.length; i++) {
         //might need to move outside the loop
         var navNode = document.createElement("button");
@@ -220,6 +299,8 @@ function questionPop() {
         qNavBar[0].appendChild(navNode);
         
     }
+    navNodes = document.querySelectorAll(".q-nav");
+
 }
 
 //create array of random number order
@@ -296,14 +377,20 @@ function lineupRandomizer(...arr) {
         }
     }
 }
+
+function gameOver() {
+    endScreenTimer();
+    if (leaderboardHistory === null) {
+        leaderboardHistory = [];
+    } else {
+        for (var i = 0; i < leaderboardHistory.length; i++) {
+            var oldEntry = document.createElement("li");
+            oldEntry.setAttribute("class", "int-entry");
+            oldEntry.textContent = leaderboardHistory[i].newInitials + "  " + leaderboardHistory[i].newScore;
+            leaderboard.appendChild(oldEntry);
+        }
+    }
+}
 //#endregion Functions
 
-questionPop();
-let navNodes = document.querySelectorAll(".q-nav");
-console.log(questionSet[0].question);
-console.log(questionSet[1].question);
-console.log(questionSet[2].question);
-console.log(questionSet[3].question);
-console.log(questionSet[4].question);
-console.log(questionSet[5].question);
-console.log("length " + questionSet.length);
+//localStorage.clear("lbEntries");
