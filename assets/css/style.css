@@ -357,14 +357,14 @@ h3{
 
     #timer {
         font-weight: 800;
-        margin-top: 1%;
+        margin-top: 2%;
         position: relative;
         left: 0;
         bottom: 0;
     }
 
     .question-select {
-        margin-top: 1%;
+        margin-top: 2%;
     }
 
     main {

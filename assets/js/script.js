@@ -93,7 +93,7 @@ pageEl.addEventListener("click", function(event) {
 });
 
     //Delegator Functions---------------------------------------------
-    //animation for start screen disappearing
+    //animation for start screen and leaderboard screen disappearing
     function screenTimer(screen){
         var screenTimeLeft = setInterval(function() {
             opacity--;
@@ -107,7 +107,7 @@ pageEl.addEventListener("click", function(event) {
             }
         },2);
     }
-
+    //fades to endscreen
     function endScreenTimer(){
         opacity = 0;
         var screenTimeLeft = setInterval(function() {
@@ -152,11 +152,11 @@ pageEl.addEventListener("click", function(event) {
     
     //navigate to clicked question
     function navToQuestion(el) {
-        
         if(el.dataset.state === "right" || el.dataset.state === "wrong") {
-            alert("question already answered");
-        }else if(el.dataset.number === questionQueue) {
-            alert("current question");
+            blink(el);
+        }else if(el.dataset.number == questionQueue) {
+            blink(el);
+            console.log("huh");
         } else {   
             questionQueue = el.dataset.number;
             for(var i = 0; i < navNodes.length; i++) {
@@ -472,7 +472,6 @@ function questionPop() {
     lineupRandomizer(...questionList);
     //generate navNodes
     for(var i = 0; i < questionSet.length; i++) {
-        //might need to move outside the loop
         navNode = document.createElement("button");
         navNode.setAttribute("id", `q${i}`);
         navNode.setAttribute("class", `q-nav`);
@@ -482,9 +481,11 @@ function questionPop() {
         
     }
     navNodeList = document.querySelectorAll(".q-nav");
+    //turn node list into array to use navNodes[x].dataset method in the navNode section of the submit event listener
     navNodes = Array.from(navNodeList);
     paintNode(navNodes[0], "active");
     navNodes[0].setAttribute("data-state", "active");
+    questionQueue = 0;
 }
 
 //create array of random number order
@@ -536,7 +537,6 @@ function lineupRandomizer(...arr) {
 
             //populate answers for first question
             lineupRandomizer(...questionSet[0].answers);
-
             return;
         //set up answers in a random ordered array
         //answers only
@@ -567,8 +567,6 @@ function lineupRandomizer(...arr) {
                 radios[i].setAttribute("value", `${answerSet[i].validity}`)
                 labels[answerSet[i].number].textContent = answerSet[i].answer;
                 }
-
-                
             return;
 
         }
@@ -585,7 +583,7 @@ function paintNode(node, state) {
         node.setAttribute("style", `background-color: var(--wrong-color);` + `width: 11px;` + `height: 11px;`);
     } else if(state === "right") {
         node.setAttribute("style", `background-color: var(--right-color);` + `width: 11px;` + `height: 11px;`);
-    }
+    } 
 }
 
 function gameOver() {
