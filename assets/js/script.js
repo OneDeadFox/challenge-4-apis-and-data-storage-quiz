@@ -36,7 +36,9 @@
     //1. have a submit button that addes users initials and score to a database that wont be erased on refresh or esc
 
 //Additional TODO:'s, no particular order
-//set nav button bg-color to change upon direct nav, active question, and skipped
+//have navnodes blink on click if current, wrong, or right
+//change border color of right and wrong
+
 
 
 //Global Variables----------------------------------------------------
@@ -48,6 +50,7 @@ let formEl = document.getElementById("question-block");
 let questionFill = document.querySelector("#question");
 let answerOptions = document.querySelectorAll('[name="answer"]');
 let qNavBar = document.getElementsByClassName("question-select");
+let navNode;
 let navNodes;
 let initials = document.getElementById("initials");
 let intSubButton = document.getElementById("int-submit")
@@ -61,7 +64,9 @@ let questionQueue = 0;
 let tempLoc = 0;
 let initQs = [];
 let questionSet = [];
+let additionalQs = [];
 let answerSet = [];
+let answered = 0;
 
 
 //--------------------------------------------------------------------
@@ -130,24 +135,43 @@ pageEl.addEventListener("click", function(event) {
     
     //skip current questtion with time penalty
     function skipQuestion() {
-        questionQueue++;
-        console.log("qQ value " + questionQueue);
+        var _tempIndex = null;
+        gameTime -= 20;
+        timerEl.textContent = gameTime + " sec";
+        //store original question
+        _tempIndex = questionSet[questionQueue];
+
+        //switch positions of skipped question with the begining of additional questions. skipped question pushed to end of additional questions.
+        questionSet[questionQueue] = additionalQs.shift();
+        additionalQs.push(_tempIndex);
+
+        //set contents to new Q&A
         questionFill.textContent = questionSet[questionQueue].question;
         lineupRandomizer(...questionSet[questionQueue].answers);
-        console.log("qQ value " + questionQueue);
     }
     
     //navigate to clicked question
     function navToQuestion(el) {
-        for(var i = 0; i < navNodes.length; i++) {
-            if(navNodes[i] === el) {
-                paintNode(el, "var(--bg-color);", "13px;");
-            } else {
-                navNodes[i].setAttribute("style", "");
+        
+        if(el.dataset.state === "right" || el.dataset.state === "wrong") {
+            alert("question already answered");
+        }else if(el.dataset.number === questionQueue) {
+            alert("current question");
+        } else {   
+            questionQueue = el.dataset.number;
+            for(var i = 0; i < navNodes.length; i++) {
+                if(navNodes[i] === el) {
+                    paintNode(el, "active");
+                    el.setAttribute("data-state", "active");
+                } else if (navNodes[i].dataset.state === "active") {
+                    paintNode(navNodes[i], "inactive");
+                    navNodes[i].setAttribute("data-state", "inactive")
+                }
             }
+            //change contents of Q&A
+            questionFill.textContent = questionSet[el.dataset.number].question;
+            lineupRandomizer(...questionSet[el.dataset.number].answers);
         }
-        questionFill.textContent = questionSet[el.dataset.number].question;
-        lineupRandomizer(...questionSet[el.dataset.number].answers);
 
     }
 
@@ -197,6 +221,7 @@ pageEl.addEventListener("click", function(event) {
         tempLoc = 0;
         questionSet = [];
         answerSet = [];
+        answered = 0;
         initials.setAttribute("style", "display: flex");
         intSubButton.setAttribute("style", "display: flex");
         for(var i = 0; i < navNodes.length; i++){
@@ -219,48 +244,70 @@ formEl.addEventListener("submit", function(event) {
 
     var formData = new FormData(formEl);
     var rspValidity = formData.get("answer");
+    answered++;
     
-    //paint previous node
-    paintNode(navNodes[questionQueue], "white;", "11px;");
+    //end quiz if out of questions
+    if(answered >= questionSet.length){
+        gameOver();
+    }
 
+    console.log(questionQueue);
+
+    //check answers validity
     if(rspValidity === null) {
         alert('Please select an answer before pressing submit');
     } else if(rspValidity === "true") {
         //increase score
         score++;
 
+        //paint right answer node
+        paintNode(navNodes[questionQueue], "right");
+        navNodes[questionQueue].setAttribute("data-state", "right");
+
+
         //change question and answers var
         questionQueue++;
-
-        //end game if out of questions
-        if(questionQueue >= questionSet.length) {
-            gameOver();
-            return;
-        }
-
-         //change question and answers content
-        questionFill.textContent = questionSet[questionQueue].question;
-        lineupRandomizer(...questionSet[questionQueue].answers);
     } else {
         //decrease time remove upon completion of navigation
-        gameTime - 30;
+        gameTime -= 30;
+        timerEl.textContent = gameTime + " sec";
+
+        //paint wrong answer node
+        paintNode(navNodes[questionQueue], "wrong");
+        navNodes[questionQueue].setAttribute("data-state", "wrong");
 
         //change question and answers
         questionQueue++;
-
-        //end game if out of questions
-        if(questionQueue >= questionSet.length) {
-            gameOver();
-            return;
-        }
-
-         //change question and answers content
-        questionFill.textContent = questionSet[questionQueue].question;
-        lineupRandomizer(...questionSet[questionQueue].answers);
-
     }
+
+    //move current question to next unanswered question point
+    if (navNodes[questionQueue].dataset.state != "inactive"){
+        var i = questionQueue;
+        do{
+            i++;
+        } while (navNodes[i].dataset.state != "inactive");
+        questionQueue = navNodes[i].dataset.number;
+        i = 0;
+    } else if (questionQueue >= questionSet.length) {
+        console.log(navNodes);
+        var i = -1;
+        do {
+            i++;
+        } while (navNodes[i].dataset.state != "inactive");
+        questionQueue = navNodes[i].dataset.number;
+        i = 0;
+        console.log(questionQueue);
+    }
+
+
+
+    //change question and answers content
+    questionFill.textContent = questionSet[questionQueue].question;
+    lineupRandomizer(...questionSet[questionQueue].answers);
+
     //light up current node
-    paintNode(navNodes[questionQueue], "var(--bg-color);", "13px;");
+    paintNode(navNodes[questionQueue], "active");
+    navNodes[questionQueue].dataset.state = "active";
 
     for(var i = 0; i < answerOptions.length; i++) {
         answerOptions[i].checked = false;
@@ -426,15 +473,19 @@ function questionPop() {
     //generate navNodes
     for(var i = 0; i < questionSet.length; i++) {
         //might need to move outside the loop
-        var navNode = document.createElement("button");
+        navNode = document.createElement("button");
         navNode.setAttribute("id", `q${i}`);
         navNode.setAttribute("class", `q-nav`);
         navNode.setAttribute("data-number", `${i}`);
+        navNode.setAttribute("data-state", "inactive");
         qNavBar[0].appendChild(navNode);
         
     }
-    navNodes = document.querySelectorAll(".q-nav");
-    paintNode(navNodes[0], "var(--bg-color);", "13px;");}
+    navNodeList = document.querySelectorAll(".q-nav");
+    navNodes = Array.from(navNodeList);
+    paintNode(navNodes[0], "active");
+    navNodes[0].setAttribute("data-state", "active");
+}
 
 //create array of random number order
 function lineupRandomizer(...arr) {
@@ -461,12 +512,6 @@ function lineupRandomizer(...arr) {
             //var ii set for following for loop
             var ii = 0;
             //set questions in new array in new order
-            
-            for(i = 0; i < arr.length; i ++) {
-                console.log(arr[i].number)
-            }
-
-
             for(i = 0; i < arr.length; i ++) {
                 if(arr[ii].number === i) {
                     initQs[i] = arr[ii];
@@ -480,15 +525,18 @@ function lineupRandomizer(...arr) {
             //divide aquestions into two arrays: intial quiz and extra 
             questionSet = initQs.splice(0, cutLength);
             for(var i = 0; i < questionSet.length; i++){    
-            console.log(questionSet[i].question);
             }
-            var additionalQs = initQs.splice(-cutLength);
+
+            additionalQs = initQs.splice(-cutLength);
             for(var i = 0; i < questionSet.length; i++){    
-                console.log(additionalQs[i].question);
             }
-            lineupRandomizer(...questionSet[0].answers);
+            
             //Populate question based on lineup arr.
             questionFill.textContent = questionSet[0].question;
+
+            //populate answers for first question
+            lineupRandomizer(...questionSet[0].answers);
+
             return;
         //set up answers in a random ordered array
         //answers only
@@ -527,8 +575,17 @@ function lineupRandomizer(...arr) {
     }
 }
 
-function paintNode(node, col, s) {
-    node.setAttribute("style", `background-color: ${col}` + `width: ${s}` + `height: ${s}`);
+function paintNode(node, state) {
+    //set navnode color and size based on its state
+    if(state === "inactive") {
+        node.setAttribute("style", `background-color: var(--header-color);` + `width: 11px;` + `height: 11px;`);
+    } else if(state === "active") {
+        node.setAttribute("style", `background-color: var(--bg-color);` + `width: 13px;` + `height: 13px;`);
+    } else if(state === "wrong") {
+        node.setAttribute("style", `background-color: var(--wrong-color);` + `width: 11px;` + `height: 11px;`);
+    } else if(state === "right") {
+        node.setAttribute("style", `background-color: var(--right-color);` + `width: 11px;` + `height: 11px;`);
+    }
 }
 
 function gameOver() {
@@ -549,10 +606,5 @@ function gameOver() {
 }
 //#endregion Functions
 
-
 questionPop();
-console.log(questionSet[0]);
-console.log(questionSet[1]);
-console.log(questionSet[2]);
-
 //localStorage.clear("lbEntries");

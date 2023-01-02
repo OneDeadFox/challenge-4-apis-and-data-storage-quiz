@@ -6,6 +6,8 @@
     --box-width: 50%;
     --main-height: 50vh;
     --shadow-color: rgba(1, 25, 46, 0.651);
+    --wrong-color: #ff817a;
+    --right-color: #cbf6f8;
 }
 
 * {
@@ -32,7 +34,7 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 2;
-    /* display: none; */
+    display: none;
 }
 
 #greeting {
