@@ -320,17 +320,17 @@ formEl.addEventListener("submit", function(event) {
 
 let question1 = {
     id: "question",
-    question: "question-a",
+    question: "Which of the follow is the proper structure of a for loop?",
     number: 0,
     //is my ture/false value a boolean when declared here because it is not upon being recieved in above function.
-    answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "for(var i = 0; i < foo; i++){}", validity: true}, {id: "answer-2", number: 0, answer: "follow your nose wherever it goes!", validity: false}, {id: "answer-3", number: 0, answer: "for(i = 0; i < foo; i++){}", validity: false}, {id: "answer-4", number: 0, answer: "for(i; i < foo; i++){}", validity: false}]
 };
 
 let question2 = {
     id: "question",
-    question: "question-1",
+    question: "Which of the following best describes an HTML element?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "An HTML element is defined by a start tag, some content, and an end tag.", validity: true}, {id: "answer-2", number: 0, answer: "a tag enclosed in angle brackets <data>", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
 };
 
 let question3 = {
@@ -584,6 +584,10 @@ function paintNode(node, state) {
     } else if(state === "right") {
         node.setAttribute("style", `background-color: var(--right-color);` + `width: 11px;` + `height: 11px;`);
     } 
+}
+
+function highscore() {
+
 }
 
 function gameOver() {

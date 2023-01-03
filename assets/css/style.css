@@ -34,7 +34,7 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 2;
-    display: none;
+    /* display: none; */
 }
 
 #greeting {
@@ -332,8 +332,8 @@ footer {
     justify-content: center;
 }
 
-h3{
-    font-size: 2.75vh;
+h5{
+    text-align: center;
 }
 /*#endregion Footer*/
 
@@ -382,8 +382,8 @@ h3{
         top: 80vh;
     }
     /* set up nav for small screem */
-    h3 {
-        display: none;
+    h5 {
+        text-align: center;
     }
 }
 /*#endregion Breakpoints*/
