@@ -37,8 +37,10 @@
 
 //Additional TODO:'s, no particular order
 //have navnodes blink on click if current, wrong, or right
-//change border color of right and wrong
-//timer can go below zero
+//timer can't go below zero
+//set up blink function
+//set up leaderboard sorting function
+//have answer positions stay in place upon click
 
 
 
@@ -59,7 +61,7 @@ let leaderboard = document.getElementById("lbList");
 let entry = document.createElement("li");
 let leaderboardHistory = JSON.parse(localStorage.getItem("lbEntries"));
 let opacity = 100;
-let gameTime = 200;
+let gameTime = 200000;
 let score = 0;
 let questionQueue = 0;
 let tempLoc = 0;
@@ -252,8 +254,6 @@ formEl.addEventListener("submit", function(event) {
         gameOver();
     }
 
-    console.log(questionQueue);
-
     //check answers validity
     if(rspValidity === null) {
         alert('Please select an answer before pressing submit');
@@ -281,43 +281,46 @@ formEl.addEventListener("submit", function(event) {
         questionQueue++;
     }
 
-    //move current question to next unanswered question point
-    if (navNodes[questionQueue].dataset.state != "inactive"){
-        var i = questionQueue;
-        do{
-            i++;
-        } while (navNodes[i].dataset.state != "inactive");
-        questionQueue = navNodes[i].dataset.number;
-        i = 0;
-    } else if (questionQueue >= questionSet.length) {
-        console.log(navNodes);
-        var i = -1;
-        do {
-            i++;
-        } while (navNodes[i].dataset.state != "inactive");
-        questionQueue = navNodes[i].dataset.number;
-        i = 0;
-        console.log(questionQueue);
+    if(rspValidity != null) {
+        //have questonQueue loop around if at last available question
+        if (questionQueue >= questionSet.length) {
+            console.log("loop de whoop");
+            var i = -1;
+            do {
+                i++;
+            } while (navNodes[i].dataset.state != "inactive");
+            questionQueue = navNodes[i].dataset.number;
+            i = 0;
+            console.log(questionQueue);
+        }
+
+        //move current question to next unanswered question point
+        if (navNodes[questionQueue].dataset.state != "inactive"){
+            var i = questionQueue;
+            console.log("here");
+            do{
+                i++;
+            } while (navNodes[i].dataset.state != "inactive");
+            questionQueue = navNodes[i].dataset.number;
+            i = 0;
+        }
+
+        //change question and answers content
+        questionFill.textContent = questionSet[questionQueue].question;
+        lineupRandomizer(...questionSet[questionQueue].answers);
+
+        //light up current node
+        paintNode(navNodes[questionQueue], "active");
+        navNodes[questionQueue].dataset.state = "active";
+
+        for(var i = 0; i < answerOptions.length; i++) {
+            answerOptions[i].checked = false;
+        }
     }
-
-
-
-    //change question and answers content
-    questionFill.textContent = questionSet[questionQueue].question;
-    lineupRandomizer(...questionSet[questionQueue].answers);
-
-    //light up current node
-    paintNode(navNodes[questionQueue], "active");
-    navNodes[questionQueue].dataset.state = "active";
-
-    for(var i = 0; i < answerOptions.length; i++) {
-        answerOptions[i].checked = false;
-    }
-
 });
 
 //--------------------------------------------------------------------
-//#region Objects
+//#region Objects Questions
 //JavaScript Questions
 let question1 = {
     id: "question",
@@ -331,12 +334,12 @@ let question2 = {
     id: "question",
     question: "What does a do...while do?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "Executes a section of code, while a consition is true", validity: true}, {id: "answer-2", number: 0, answer: "Executes a section of code a set number of times", validity: false}, {id: "answer-3", number: 0, answer: "Crashes your browser, if you're not careful", validity: true}, {id: "answer-4", number: 0, answer: "Keeps a condition ture until event is triggered", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Executes a section of code, while a condition is true", validity: true}, {id: "answer-2", number: 0, answer: "Executes a section of code a set number of times", validity: false}, {id: "answer-3", number: 0, answer: "Crashes your browser, if you're not careful", validity: true}, {id: "answer-4", number: 0, answer: "Keeps a condition ture until event is triggered", validity: false}]
 };
 
 let question3 = {
     id: "question",
-    question: "Which of the following is a read-only property of the window that allows you to access a JavaSCript storage object for the document's origin?",
+    question: "Which of the following is a read-only property of the window that allows you to access a JavaScript storage object for the document's origin?",
     number: 0,
     answers: [{id: "answer-1", number: 0, answer: "local.storage", validity: true}, {id: "answer-2", number: 0, answer: "Object", validity: false}, {id: "answer-3", number: 0, answer: "brief.case()", validity: false}, {id: "answer-4", number: 0, answer: "pull-data.origin", validity: false}]
 };
@@ -359,7 +362,7 @@ let question6 = {
     id: "question",
     question: "What are the two ways of creating a JavaScript function?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "Function expression and Function delcaration", validity: true}, {id: "answer-2", number: 0, answer: "Function creation and Function delination", validity: false}, {id: "answer-3", number: 0, answer: "When two parent functions love each other very much.", validity: false}, {id: "answer-4", number: 0, answer: "Funtion exposition and Function deligation", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Function expression and Function delcaration", validity: true}, {id: "answer-2", number: 0, answer: "Function creation and Function delineation", validity: false}, {id: "answer-3", number: 0, answer: "When two parent functions love each other very much.", validity: false}, {id: "answer-4", number: 0, answer: "Funtion exposition and Function deligation", validity: false}]
 };
 
 let question7 = {
@@ -381,12 +384,12 @@ let question9 = {
     id: "question",
     question: "What does the CSS display declaration do?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "Sets wether an element is treated as a block or inline element", validity: true}, {id: "answer-2", number: 0, answer: "Determines wether or not an element is displayed", validity: false}, {id: "answer-3", number: 0, answer: "Adjusts the users desplay settings", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Sets wether an element is treated as a block or inline element", validity: true}, {id: "answer-2", number: 0, answer: "Determines wether or not an element is visible", validity: false}, {id: "answer-3", number: 0, answer: "Puts on a grand performance regarding disrespectful comments", validity: false}, {id: "answer-4", number: 0, answer: "Adjusts the users desplay settings", validity: false}]
 };
 
 let question10 = {
     id: "question",
-    question: "in CSS, vh and vw are what type of units?",
+    question: "In CSS, vh and vw are what type of units?",
     number: 0,
     answers: [{id: "answer-1", number: 0, answer: "Viewport units", validity: true}, {id: "answer-2", number: 0, answer: "Vector units", validity: false}, {id: "answer-3", number: 0, answer: "Victory points", validity: false}, {id: "answer-4", number: 0, answer: "Vital-height and Vital-width, respectively", validity: false}]
 };
@@ -464,7 +467,7 @@ let question20 = {
 
 
 let questionList = [question1, question2, question3, question4, question5, question6, question7, question8, question9, question10, question11, question12, question13, question14, question15, question16, question17, question18, question19, question20];
-//#endregion Objects
+//#endregion Objects Questions
 
 
 //--------------------------------------------------------------------
@@ -494,6 +497,9 @@ function questionPop() {
 //create array of random number order
 function lineupRandomizer(...arr) {
     var lineup = [];
+    var answerSheet = [];
+
+    //initialize random line-up
     for(var i = 0; i <= arr.length; i++){
         var tempNum = Math.floor(Math.random()*arr.length);
 
@@ -541,6 +547,7 @@ function lineupRandomizer(...arr) {
             //populate answers for first question
             lineupRandomizer(...questionSet[0].answers);
             return;
+
         //set up answers in a random ordered array
         //answers only
         } else if(lineup.length === arr.length && arr[0].question === undefined) {
@@ -563,6 +570,7 @@ function lineupRandomizer(...arr) {
                 }
             }
 
+            //load answer options on page
             for(var i = 0; i < answerOptions.length; i++){
                 var labels = document.querySelectorAll(".label");
                 var radios = document.querySelectorAll("input[type=radio]");

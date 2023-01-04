@@ -224,6 +224,7 @@ main {
 
 main p {
     padding-left: 2%;
+    padding-right: 2%;
     padding-top: 1%;
     text-align: left;
 }
