@@ -38,6 +38,7 @@
 //Additional TODO:'s, no particular order
 //have navnodes blink on click if current, wrong, or right
 //change border color of right and wrong
+//timer can go below zero
 
 
 
@@ -317,7 +318,7 @@ formEl.addEventListener("submit", function(event) {
 
 //--------------------------------------------------------------------
 //#region Objects
-
+//JavaScript Questions
 let question1 = {
     id: "question",
     question: "Which of the follow is the proper structure of a for loop?",
@@ -328,135 +329,137 @@ let question1 = {
 
 let question2 = {
     id: "question",
-    question: "Which of the following best describes an HTML element?",
+    question: "What does a do...while do?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "An HTML element is defined by a start tag, some content, and an end tag.", validity: true}, {id: "answer-2", number: 0, answer: "a tag enclosed in angle brackets <data>", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Executes a section of code, while a consition is true", validity: true}, {id: "answer-2", number: 0, answer: "Executes a section of code a set number of times", validity: false}, {id: "answer-3", number: 0, answer: "Crashes your browser, if you're not careful", validity: true}, {id: "answer-4", number: 0, answer: "Keeps a condition ture until event is triggered", validity: false}]
 };
 
 let question3 = {
     id: "question",
-    question: "question-i",
+    question: "Which of the following is a read-only property of the window that allows you to access a JavaSCript storage object for the document's origin?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "local.storage", validity: true}, {id: "answer-2", number: 0, answer: "Object", validity: false}, {id: "answer-3", number: 0, answer: "brief.case()", validity: false}, {id: "answer-4", number: 0, answer: "pull-data.origin", validity: false}]
 };
 
 let question4 = {
     id: "question",
-    question: "question-d",
+    question: "which of the following JavaScript functions will prevent the page from refreshing from a buttons click event?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "preventDefault()", validity: true}, {id: "answer-2", number: 0, answer: "unshift()", validity: false}, {id: "answer-3", number: 0, answer: "defresh()", validity: false}, {id: "answer-4", number: 0, answer: "stop.refresh", validity: false}]
 };
 
 let question5 = {
     id: "question",
-    question: "question-5",
+    question: "what are the 7 data types used in JavaScript?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "null, undefined, string, object, number, boolean, bigInt, symbol", validity: true}, {id: "answer-2", number: 0, answer: "null, undefined, string, object, number, boolean, element, tag", validity: false}, {id: "answer-3", number: 0, answer: "01100100, 01100001, 01110100, 01100001, 01110100, 01111001, 01110000", validity: false}, {id: "answer-4", number: 0, answer: "undefined, string, object, number, true, false, binary", validity: false}]
 };
 
 let question6 = {
     id: "question",
-    question: "question-vi",
+    question: "What are the two ways of creating a JavaScript function?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Function expression and Function delcaration", validity: true}, {id: "answer-2", number: 0, answer: "Function creation and Function delination", validity: false}, {id: "answer-3", number: 0, answer: "When two parent functions love each other very much.", validity: false}, {id: "answer-4", number: 0, answer: "Funtion exposition and Function deligation", validity: false}]
 };
 
 let question7 = {
     id: "question",
-    question: "question-7",
+    question: "Data stored in JavaScript objects are refered to as?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Keys", validity: true}, {id: "answer-2", number: 0, answer: "Variables", validity: false}, {id: "answer-3", number: 0, answer: "Children", validity: false}, {id: "answer-4", number: 0, answer: "Attributes", validity: false}]
 };
 
+//CSS Questions
 let question8 = {
     id: "question",
-    question: "question-8",
+    question: "Which of the following CSS declarations will center a flex-direction:column container's children along the x axis?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "align-items: center", validity: true}, {id: "answer-2", number: 0, answer: "justify-content: center", validity: false}, {id: "answer-3", number: 0, answer: "text-align: center", validity: false}, {id: "answer-4", number: 0, answer: "justify-self: center", validity: false}]
 };
 
 let question9 = {
     id: "question",
-    question: "question-9",
+    question: "What does the CSS display declaration do?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Sets wether an element is treated as a block or inline element", validity: true}, {id: "answer-2", number: 0, answer: "Determines wether or not an element is displayed", validity: false}, {id: "answer-3", number: 0, answer: "Adjusts the users desplay settings", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
 };
 
 let question10 = {
     id: "question",
-    question: "question-10",
+    question: "in CSS, vh and vw are what type of units?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Viewport units", validity: true}, {id: "answer-2", number: 0, answer: "Vector units", validity: false}, {id: "answer-3", number: 0, answer: "Victory points", validity: false}, {id: "answer-4", number: 0, answer: "Vital-height and Vital-width, respectively", validity: false}]
 };
 
 let question11 = {
     id: "question",
-    question: "question-11",
+    question: "@media is known as a CSS _____?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "CSS rule", validity: true}, {id: "answer-2", number: 0, answer: "CSS selector", validity: false}, {id: "answer-3", number: 0, answer: "CSS domain name", validity: false}, {id: "answer-4", number: 0, answer: "CSS tag", validity: false}]
 };
 
 let question12 = {
     id: "question",
-    question: "question-12",
+    question: "The second S in CSS stands for",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Style", validity: true}, {id: "answer-2", number: 0, answer: "Sheets", validity: false}, {id: "answer-3", number: 0, answer: "Superfluity", validity: false}, {id: "answer-4", number: 0, answer: "Superimposed", validity: false}]
 };
 
 let question13 = {
     id: "question",
-    question: "question-13",
+    question: "Which of the following has greater specificity?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "!important", validity: true}, {id: "answer-2", number: 0, answer: ".sel", validity: false}, {id: "answer-3", number: 0, answer: "#sel", validity: false}, {id: "answer-4", number: 0, answer: "sel", validity: false}]
 };
 
 let question14 = {
     id: "question",
-    question: "question-14",
+    question: "What 4 areas make up the CSS box model?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Margin, border, padding, content", validity: true}, {id: "answer-2", number: 0, answer: "Top, right, bottom, left", validity: false}, {id: "answer-3", number: 0, answer: "Margarine, butter, pudding, croissant", validity: false}, {id: "answer-4", number: 0, answer: "Margin, border, padding, background", validity: false}]
 };
 
+//HTML Qustions
 let question15 = {
     id: "question",
-    question: "question-15",
+    question: "Which of the following best describes a HTML element?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "An HTML element is defined by a start tag, some content, and an end tag.", validity: true}, {id: "answer-2", number: 0, answer: "a tag enclosed in angle brackets <data>", validity: false}, {id: "answer-3", number: 0, answer: "Fire, earth, water, and air.", validity: false}, {id: "answer-4", number: 0, answer: "An identifier that must be unique in the whole document", validity: false}]
 };
 
 let question16 = {
     id: "question",
-    question: "question-16",
+    question: "Which of these is not a semantic tag in HTML",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "<region>", validity: true}, {id: "answer-2", number: 0, answer: "<section>", validity: false}, {id: "answer-3", number: 0, answer: "<nav>", validity: false}, {id: "answer-4", number: 0, answer: "<mark>", validity: false}]
 };
 
 let question17 = {
     id: "question",
-    question: "question-17",
+    question: "What aspect of HTML provides additional information about HTML elements?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Attributes", validity: true}, {id: "answer-2", number: 0, answer: "Tags", validity: false}, {id: "answer-3", number: 0, answer: "Links/Refrences", validity: false}, {id: "answer-4", number: 0, answer: "Forms", validity: false}]
 };
 
 let question18 = {
     id: "question",
-    question: "question-18",
+    question: "Which of the following attributes specifies which form element a label is bound to?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "a", validity: true}, {id: "answer-2", number: 0, answer: "b", validity: false}, {id: "answer-3", number: 0, answer: "c", validity: false}, {id: "answer-4", number: 0, answer: "d", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "For", validity: true}, {id: "answer-2", number: 0, answer: "Type", validity: false}, {id: "answer-3", number: 0, answer: "Input", validity: false}, {id: "answer-4", number: 0, answer: "Name", validity: false}]
 };
 
 let question19 = {
     id: "question",
-    question: "question-19",
+    question: `What is the maximum number of elements in a singel HTML document that have the id "main"`,
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "2", validity: false}, {id: "answer-3", number: 0, answer: "3", validity: false}, {id: "answer-4", number: 0, answer: "4", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "1", validity: true}, {id: "answer-2", number: 0, answer: "10", validity: false}, {id: "answer-3", number: 0, answer: "Each document needs at least 1", validity: false}, {id: "answer-4", number: 0, answer: "Infinitely many", validity: false}]
 };
 
 let question20 = {
     id: "question",
-    question: "question-20",
+    question: "In HTML can you combine multiple stylesheets into one stylesheet? If so, how?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "i", validity: true}, {id: "answer-2", number: 0, answer: "ii", validity: false}, {id: "answer-3", number: 0, answer: "iii", validity: false}, {id: "answer-4", number: 0, answer: "iv", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Yes. Give all the stylesheets the value for the title attribute", validity: true}, {id: "answer-2", number: 0, answer: "Yes. Add each file destination to the href using +'s", validity: false}, {id: "answer-3", number: 0, answer: "No. There can only be one stylesheet per HTML document", validity: false}, {id: "answer-4", number: 0, answer: "No. but you will be able to in HTML6", validity: false}]
 };
 
 
@@ -608,5 +611,4 @@ function gameOver() {
 }
 //#endregion Functions
 
-questionPop();
 //localStorage.clear("lbEntries");
