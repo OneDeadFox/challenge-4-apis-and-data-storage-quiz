@@ -61,7 +61,7 @@ let leaderboard = document.getElementById("lbList");
 let entry = document.createElement("li");
 let leaderboardHistory = JSON.parse(localStorage.getItem("lbEntries"));
 let opacity = 100;
-let gameTime = 200000;
+let gameTime = 200;
 let score = 0;
 let questionQueue = 0;
 let tempLoc = 0;
@@ -570,7 +570,6 @@ function lineupRandomizer(...arr) {
                 }
             }
 
-            //load answer options on page
             for(var i = 0; i < answerOptions.length; i++){
                 var labels = document.querySelectorAll(".label");
                 var radios = document.querySelectorAll("input[type=radio]");
