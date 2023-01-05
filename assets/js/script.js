@@ -234,6 +234,7 @@ pageEl.addEventListener("click", function(event) {
 
         screenTimer(goScreenEl);
         gameTime = 200;
+        timerEl.textContent = gameTime + " sec";
         score = 0;
         finalScore = 0;
         questionQueue = 0;
