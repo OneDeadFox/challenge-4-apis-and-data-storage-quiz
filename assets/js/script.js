@@ -348,7 +348,7 @@ formEl.addEventListener("submit", function(event) {
 
             do{
                 i++;
-                if(i >= questionQueue) {
+                if(i >= questionSet.length) {
                     i = 0;
                 }
             } while (navNodes[i].dataset.state != "inactive");
