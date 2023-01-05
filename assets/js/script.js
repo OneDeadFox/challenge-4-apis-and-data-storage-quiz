@@ -36,9 +36,6 @@
     //1. have a submit button that addes users initials and score to a database that wont be erased on refresh or esc
 
 //Additional TODO:'s, no particular order
-//have navnodes blink on click if current, wrong, or right
-//timer can't go below zero
-//set up blink function
 //set up leaderboard sorting function
 //have answer positions stay in place upon click
 
@@ -61,7 +58,8 @@ let leaderboard = document.getElementById("lbList");
 let entry = document.createElement("li");
 let leaderboardHistory = JSON.parse(localStorage.getItem("lbEntries"));
 let opacity = 100;
-let gameTime = 200;
+let gameTime = 0;
+let gameTimeLeft;
 let score = 0;
 let questionQueue = 0;
 let tempLoc = 0;
@@ -125,11 +123,12 @@ pageEl.addEventListener("click", function(event) {
     
     //in-game timer
     function gameTimer(){
-        var gameTimeLeft = setInterval(function() {
+        gameTimeLeft = setInterval(function() {
             gameTime--
             //Count down time on screen
             timerEl.textContent = gameTime + " sec";
             if(gameTime <= 0) {
+                gameTime = 0;
                 gameOver();
                 clearInterval(gameTimeLeft);
             }
@@ -139,8 +138,19 @@ pageEl.addEventListener("click", function(event) {
     //skip current questtion with time penalty
     function skipQuestion() {
         var _tempIndex = null;
+        //penalty for wrong answer
         gameTime -= 20;
+        
+        //prevent negative game time and end game
+        if(gameTime <= 0){
+            clearInterval(gameTimeLeft);
+            gameTime = 0;
+            gameOver();
+        }
+
+        //print updated game time
         timerEl.textContent = gameTime + " sec";
+
         //store original question
         _tempIndex = questionSet[questionQueue];
 
@@ -159,7 +169,7 @@ pageEl.addEventListener("click", function(event) {
             blink(el);
         }else if(el.dataset.number == questionQueue) {
             blink(el);
-            console.log("huh");
+            console.log("blink");
         } else {   
             questionQueue = el.dataset.number;
             for(var i = 0; i < navNodes.length; i++) {
@@ -271,6 +281,15 @@ formEl.addEventListener("submit", function(event) {
     } else {
         //decrease time remove upon completion of navigation
         gameTime -= 30;
+
+        //prevent negative game time and end game
+        if(gameTime <= 0){
+            clearInterval(gameTimeLeft);
+            gameTime = 0;
+            gameOver();
+        }
+
+        //print updated game time
         timerEl.textContent = gameTime + " sec";
 
         //paint wrong answer node
@@ -596,13 +615,46 @@ function paintNode(node, state) {
     } 
 }
 
-function highscore() {
-
+function blink(node) {
+    _tempStyle = node.getAttribute('style');
+    _tempSize = node.offsetWidth;
+    nodeSize = node.offsetWidth;
+    marginSize = 0;
+    scaleDown();
+    console.log(nodeSize);
+    //Shrink node
+    function scaleDown(){
+        var scaleDownTimer = setInterval(function() {
+            nodeSize--;
+            marginSize++
+            node.setAttribute('style', `${_tempStyle};` + `width: ${nodeSize}px;` + `height: ${nodeSize}px;` + `margin: ${marginSize/2}px;` + `box-shadow: 0px 0px 4px white`);
+            console.log("down" + nodeSize);
+            if(nodeSize <= 0) {
+                scaleUp();
+                clearInterval(scaleDownTimer);
+            }
+        }, 1);
+    }
+    //Resize node
+    function scaleUp(){
+        var scaleUpTimer = setInterval(function() {
+            nodeSize++;
+            marginSize--;
+            node.setAttribute('style', `${_tempStyle};` + `width: ${nodeSize}px;` + `height: ${nodeSize}px;` + `margin: ${marginSize/2}px;` + `box-shadow: 0px 0px 4px white`);
+            console.log("up" + nodeSize);
+            if(nodeSize >= _tempSize) {
+                node.setAttribute('style', _tempStyle);
+                clearInterval(scaleUpTimer);
+            }
+        }, 10);
+    }
 }
 
 function gameOver() {
     //set scoring
     score = (score * 20 + gameTime);
+    var yourScore = document.querySelector("#yourScore");
+    yourScore.textContent = "Your Score " + score;
     //bring up end screen
     endScreenTimer();
     if (leaderboardHistory === null) {
