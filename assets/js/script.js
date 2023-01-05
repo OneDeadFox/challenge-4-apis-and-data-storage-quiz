@@ -58,7 +58,7 @@ let leaderboard = document.getElementById("lbList");
 let entry = document.createElement("li");
 let leaderboardHistory = JSON.parse(localStorage.getItem("lbEntries"));
 let opacity = 100;
-let gameTime = 0;
+let gameTime = 200;
 let gameTimeLeft;
 let score = 0;
 let questionQueue = 0;
