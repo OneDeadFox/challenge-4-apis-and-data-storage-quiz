@@ -35,12 +35,6 @@
 //TODO: allow player to save initials and score to leader board
     //1. have a submit button that addes users initials and score to a database that wont be erased on refresh or esc
 
-//Additional TODO:'s, no particular order
-//have answer positions stay in place upon click
-//deselect radio upon reset
-//timer not ending on gameover
-
-
 
 //Global Variables----------------------------------------------------
 let pageEl = document.body;
@@ -165,12 +159,14 @@ pageEl.addEventListener("click", function(event) {
         lineupRandomizer(...questionSet[questionQueue].answers);
     }
     
-    //navigate to clicked question
+    //navbar options
     function navToQuestion(el) {
+        //navnode blinks on click
         if(el.dataset.state === "right" || el.dataset.state === "wrong") {
             blink(el);
         }else if(el.dataset.number == questionQueue) {
             blink(el);
+        //navigate to clicked question
         } else {   
             questionQueue = el.dataset.number;
             for(var i = 0; i < navNodes.length; i++) {
@@ -192,8 +188,10 @@ pageEl.addEventListener("click", function(event) {
     //submit initials and score to leaderboard
     function leaderboardAdd() {
         //how do I use /^[0-9a-zA-Z]+$/
+        //got it to work but do know why
         var letterNumber = /^[0-9a-zA-Z]+$/;
 
+        //ensure proper inital values
         if(initials.value.length > 3) {
             alert("Your string cannot exceed 3 alphanumeric characters");
         } else if(initials.value === "") {
@@ -206,6 +204,7 @@ pageEl.addEventListener("click", function(event) {
                 storedScore: finalScore
             };
 
+            //set initial variables values
             initials.setAttribute("style", "display: none");
             intSubButton.setAttribute("style", "display: none");
 
@@ -261,6 +260,7 @@ pageEl.addEventListener("click", function(event) {
         
     }
 
+//Allow user to press enter to submit answer
 initials.addEventListener('keydown', (event) => {
     var keyName = event.key;
 
@@ -587,7 +587,6 @@ function lineupRandomizer(...arr) {
             questionSet = initQs.splice(0, cutLength);
             for(var i = 0; i < questionSet.length; i++){    
             }
-
             additionalQs = initQs.splice(-cutLength);
             for(var i = 0; i < questionSet.length; i++){    
             }
@@ -621,6 +620,7 @@ function lineupRandomizer(...arr) {
                 }
             }
 
+            //set answers to radio buttons
             for(var i = 0; i < answerOptions.length; i++){
                 var labels = document.querySelectorAll(".label");
                 var radios = document.querySelectorAll("input[type=radio]");
@@ -714,5 +714,3 @@ function gameOver() {
     }
 }
 //#endregion Functions
-
-//localStorage.clear("lbEntries");
