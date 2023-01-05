@@ -35,6 +35,8 @@
 //TODO: allow player to save initials and score to leader board
     //1. have a submit button that addes users initials and score to a database that wont be erased on refresh or esc
 
+//Additional Tasks:
+//todo: loop when last question is answered in the middle
 
 //Global Variables----------------------------------------------------
 let pageEl = document.body;
@@ -346,6 +348,9 @@ formEl.addEventListener("submit", function(event) {
 
             do{
                 i++;
+                if(i >= questionQueue) {
+                    i = 0;
+                }
             } while (navNodes[i].dataset.state != "inactive");
             questionQueue = navNodes[i].dataset.number;
             i = 0;
