@@ -83,6 +83,28 @@ body {
     border-radius: 100%;
     box-shadow: 2px 2px 4px var(--shadow-color);
 }
+
+#rules {
+    background-color: var(--box-color);
+    width: 25vw;
+    height: fit-content;
+    border-radius: 30px;
+    position: absolute;
+    top: 2.5vh;
+    right: 2vw;
+}
+
+#rules h2 {
+    margin-top: 4%;
+    margin-left: 4%;
+}
+
+.rule {
+    margin-right: 4%;
+    margin-bottom: 10%;
+    margin-left: 4%;
+    text-align: justify;
+}
 /*#endregion Onload Screen*/
 
 /*#region Game Over Screen*/
@@ -124,15 +146,15 @@ body {
 }
 
 #initials {
-    width: 10em;
+    width: 12vw;
     align-self: flex-end;
     position: fixed;
-    bottom: 12em;
+    bottom: 26vh;
 }
 
 #int-submit {
     position: fixed;
-    bottom: 12em;
+    bottom: 26vh;
 }
 
 #play-again {
@@ -142,7 +164,7 @@ body {
     align-self: center;
     padding: .5%;
     position: fixed;
-    bottom: 3em;
+    bottom: 13vh;
 }
 
 /*#endregion Game Over Screen*/
@@ -341,6 +363,10 @@ h5{
 
 /*#region Breakpoints*/
 @media screen and (max-width: 768px) {  
+    #rules {
+        display: none;
+    }
+    
     header {
         width: 90%;
         height: 18vh;

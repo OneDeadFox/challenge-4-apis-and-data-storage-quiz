@@ -36,8 +36,9 @@
     //1. have a submit button that addes users initials and score to a database that wont be erased on refresh or esc
 
 //Additional TODO:'s, no particular order
-//set up leaderboard sorting function
 //have answer positions stay in place upon click
+//deselect radio upon reset
+//timer not ending on gameover
 
 
 
@@ -61,6 +62,7 @@ let opacity = 100;
 let gameTime = 200;
 let gameTimeLeft;
 let score = 0;
+let finalScore = 0;
 let questionQueue = 0;
 let tempLoc = 0;
 let initQs = [];
@@ -128,9 +130,9 @@ pageEl.addEventListener("click", function(event) {
             //Count down time on screen
             timerEl.textContent = gameTime + " sec";
             if(gameTime <= 0) {
+                clearInterval(gameTimeLeft);
                 gameTime = 0;
                 gameOver();
-                clearInterval(gameTimeLeft);
             }
         }, 1000);
     }
@@ -169,7 +171,6 @@ pageEl.addEventListener("click", function(event) {
             blink(el);
         }else if(el.dataset.number == questionQueue) {
             blink(el);
-            console.log("blink");
         } else {   
             questionQueue = el.dataset.number;
             for(var i = 0; i < navNodes.length; i++) {
@@ -201,35 +202,41 @@ pageEl.addEventListener("click", function(event) {
             alert("Your initials cannot contain special characters");
         } else {
             var newEntry = {
-                newInitials: initials.value,
-                newScore: score
+                storedInitials: initials.value,
+                storedScore: finalScore
             };
 
             initials.setAttribute("style", "display: none");
             intSubButton.setAttribute("style", "display: none");
 
             entry.setAttribute("class", "int-entry");
-            entry.textContent = initials.value + "  " + score;
+            entry.textContent = initials.value + "  " + finalScore;
             leaderboard.appendChild(entry);
             addEntry();
 
-
+            //add new initials and score
             function addEntry(){
                 leaderboardHistory.push(newEntry);
                 localStorage.setItem("lbEntries", JSON.stringify(leaderboardHistory));
-                console.log(leaderboardHistory);
-                
             }
+            //select and delete cuurent leaderboard
+            var oldEntries = document.querySelectorAll(".int-entry");
+            for (let i = 0; i < oldEntries.length; i++) {
+                oldEntries[i].remove();
+            }
+            //sort and print leaderboard with new entries
+            leaderboardSort();
         }
     }
 
     //restart the game
     function restart() {
-        var lis = document.querySelectorAll(".int-entry");
+        var leaderboardEntries = document.querySelectorAll(".int-entry");
 
         screenTimer(goScreenEl);
         gameTime = 200;
         score = 0;
+        finalScore = 0;
         questionQueue = 0;
         tempLoc = 0;
         questionSet = [];
@@ -237,15 +244,30 @@ pageEl.addEventListener("click", function(event) {
         answered = 0;
         initials.setAttribute("style", "display: flex");
         intSubButton.setAttribute("style", "display: flex");
+        
+        //remove nav bar nodes
         for(var i = 0; i < navNodes.length; i++){
             navNodes[i].remove();
         }
-        for(var i = 0; i < lis.length; i++){
-            lis[i].remove();
+        //remove leaderboard entries
+        for(var i = 0; i < leaderboardEntries.length; i++){
+            leaderboardEntries[i].remove();
+        }
+        //uncheck answer buttons
+        for(var i = 0; i < answerOptions.length; i++) {
+            answerOptions[i].checked = false;
         }
         questionPop();
         
     }
+
+initials.addEventListener('keydown', (event) => {
+    var keyName = event.key;
+
+    if (keyName === "Enter") {
+        leaderboardAdd();
+    }
+});
 
 //#endregion Event Delegator
 
@@ -262,6 +284,7 @@ formEl.addEventListener("submit", function(event) {
     //end quiz if out of questions
     if(answered >= questionSet.length){
         gameOver();
+        return;
     }
 
     //check answers validity
@@ -278,6 +301,7 @@ formEl.addEventListener("submit", function(event) {
 
         //change question and answers var
         questionQueue++;
+
     } else {
         //decrease time remove upon completion of navigation
         gameTime -= 30;
@@ -303,20 +327,22 @@ formEl.addEventListener("submit", function(event) {
     if(rspValidity != null) {
         //have questonQueue loop around if at last available question
         if (questionQueue >= questionSet.length) {
-            console.log("loop de whoop");
             var i = -1;
+            
             do {
                 i++;
+                if(i >= questionSet.length) {
+                    return;
+                }
             } while (navNodes[i].dataset.state != "inactive");
             questionQueue = navNodes[i].dataset.number;
             i = 0;
-            console.log(questionQueue);
         }
 
         //move current question to next unanswered question point
         if (navNodes[questionQueue].dataset.state != "inactive"){
             var i = questionQueue;
-            console.log("here");
+
             do{
                 i++;
             } while (navNodes[i].dataset.state != "inactive");
@@ -337,6 +363,12 @@ formEl.addEventListener("submit", function(event) {
         }
     }
 });
+
+document.getElementById('int-submit').onkeydown = function(event) {
+    if(event.keycode == 13) {
+
+    }
+}
 
 //--------------------------------------------------------------------
 //#region Objects Questions
@@ -403,7 +435,7 @@ let question9 = {
     id: "question",
     question: "What does the CSS display declaration do?",
     number: 0,
-    answers: [{id: "answer-1", number: 0, answer: "Sets wether an element is treated as a block or inline element", validity: true}, {id: "answer-2", number: 0, answer: "Determines wether or not an element is visible", validity: false}, {id: "answer-3", number: 0, answer: "Puts on a grand performance regarding disrespectful comments", validity: false}, {id: "answer-4", number: 0, answer: "Adjusts the users desplay settings", validity: false}]
+    answers: [{id: "answer-1", number: 0, answer: "Sets wether an element is treated as a block or inline element", validity: true}, {id: "answer-2", number: 0, answer: "Determines wether or not an element is visible", validity: false}, {id: "answer-3", number: 0, answer: "Puts on a grand performance regarding disrespectful comments", validity: false}, {id: "answer-4", number: 0, answer: "Adjusts the users display settings", validity: false}]
 };
 
 let question10 = {
@@ -621,14 +653,14 @@ function blink(node) {
     nodeSize = node.offsetWidth;
     marginSize = 0;
     scaleDown();
-    console.log(nodeSize);
+
     //Shrink node
     function scaleDown(){
         var scaleDownTimer = setInterval(function() {
             nodeSize--;
             marginSize++
             node.setAttribute('style', `${_tempStyle};` + `width: ${nodeSize}px;` + `height: ${nodeSize}px;` + `margin: ${marginSize/2}px;` + `box-shadow: 0px 0px 4px white`);
-            console.log("down" + nodeSize);
+
             if(nodeSize <= 0) {
                 scaleUp();
                 clearInterval(scaleDownTimer);
@@ -641,7 +673,7 @@ function blink(node) {
             nodeSize++;
             marginSize--;
             node.setAttribute('style', `${_tempStyle};` + `width: ${nodeSize}px;` + `height: ${nodeSize}px;` + `margin: ${marginSize/2}px;` + `box-shadow: 0px 0px 4px white`);
-            console.log("up" + nodeSize);
+
             if(nodeSize >= _tempSize) {
                 node.setAttribute('style', _tempStyle);
                 clearInterval(scaleUpTimer);
@@ -650,22 +682,35 @@ function blink(node) {
     }
 }
 
+function leaderboardSort() {
+    //sirt leaderboard
+    leaderboardHistory.sort((a,b) => b.storedScore - a.storedScore);
+    //print sorted leaderboard
+    for (var i = 0; i < leaderboardHistory.length; i++) {
+        var oldEntry = document.createElement("li");
+        oldEntry.setAttribute("class", "int-entry");
+        oldEntry.textContent = leaderboardHistory[i].storedInitials + "  " + leaderboardHistory[i].storedScore;
+        leaderboard.appendChild(oldEntry);
+    }
+}
+
 function gameOver() {
+    //clear timer
+    clearInterval(gameTimeLeft);
     //set scoring
-    score = (score * 20 + gameTime);
+    finalScore = ((score * 20) + gameTime);
+
+    //display your current score at bottom of screen
     var yourScore = document.querySelector("#yourScore");
-    yourScore.textContent = "Your Score " + score;
+    yourScore.textContent = "Your Score " + finalScore;
+    
     //bring up end screen
     endScreenTimer();
     if (leaderboardHistory === null) {
         leaderboardHistory = [];
     } else {
-        for (var i = 0; i < leaderboardHistory.length; i++) {
-            var oldEntry = document.createElement("li");
-            oldEntry.setAttribute("class", "int-entry");
-            oldEntry.textContent = leaderboardHistory[i].newInitials + "  " + leaderboardHistory[i].newScore;
-            leaderboard.appendChild(oldEntry);
-        }
+        //sort and print leaderboard
+        leaderboardSort();
     }
 }
 //#endregion Functions
